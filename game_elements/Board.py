@@ -16,7 +16,7 @@ class Board:
 
     def draw(self, screen, offset):
         screen.fill(WHITE)
-        offset = (offset[0], 30)
+        offset = (offset[0], offset[1])
         screen.blit(self.bg, offset)
         
     

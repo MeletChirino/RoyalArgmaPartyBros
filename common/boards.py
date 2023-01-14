@@ -10,7 +10,7 @@ MAIN_BOARD = {
     "background": os.path.join(BOARDS_FOLDER, "board1.png"),
     "size": (720, 550),
     "offset": [120, 90],
-    "start_pos": [70, 70],
+    "start_pos": [70, 70], # you should add the offset and the initial position
     "dim": [1, 4],
     "square_dir": [
             [1, 1, 1, 1],

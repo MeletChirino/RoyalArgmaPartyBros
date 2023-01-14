@@ -36,14 +36,14 @@ class Game:
                 pos = p_sum(pos, [CHARACTER_SPACE, 0])
             pygame.display.flip()
         
-        offset = [0, 0]
-        n = 0
+        offset = self.offset
+        n = 1
         for player in self.players:
             print(F"{player}")
             choosen = False
             while not choosen:
                 choosen = True
-                avatar = input("Choose a character\n >>> ")
+                avatar = input(F"{player} please choose a character\n >>> ")
                 # verify if charater is already choosen
                 for player_ in self.players:
                     if avatar == player_.av_name:
@@ -52,16 +52,19 @@ class Game:
                         break # break for loop
             
                 if avatar in AVATARS and choosen:
+                    player.set_offset(offset)
                     if (n % 3 == 0):
-                        offset = p_sum(offset, [CHARACTER_OFFSET, 0])
+                        offset = p_sum(offset, [0, CHARACTER_OFFSET])
+                        offset[0] = self.offset[0]
                     else:
                         # this starts a new line
-                        offset = p_sum(offset, [0, CHARACTER_OFFSET])
+                        offset = p_sum(offset, [CHARACTER_OFFSET, 0])
+                    
                     choosen = True
                     n += 1
                     player.set_avatar(avatar)
-                    player.set_offset(offset)
-
+                    start_position = self.board.properties["start_pos"]
+                    player.move(self.screen, start_position)
                 else:
                     print("Character not eligible")
                     choosen = False
@@ -88,12 +91,14 @@ class Game:
         # --- Get events end
 
         # --- Draw Board init
+        print(F"offset = {self.offset}")
         self.board.draw(self.screen, self.offset)
         # --- Draw Board end
 
         # --- Draw players init
-
         # Draw stats
+
+        # Draw players
         for player in self.players:
             player.draw(self.screen)
         
@@ -101,6 +106,6 @@ class Game:
 
         # update screen
         pygame.display.flip()
-        self.clock.tick(60) # Frames Per Second
+        self.clock.tick(10) # Frames Per Second
         return continue_
 
