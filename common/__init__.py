@@ -4,11 +4,13 @@ from .boards import *
 # --- SIZES ---
 SQUARE_SIZE = 70
 CHARACTER_SIZE = [40, 40]
+PIC_SIZE = [70, 70]
 SPEED = [10, 10]
 
 # --- AVATAR LIST ---
 AVATARS = {
     "homer": os.path.join(CHARACTERS_FOLDER, "homer.png"),
+    "madeline": os.path.join(CHARACTERS_FOLDER, "madeline.png"),
 }
 
 # --- BOARDS LIST ----
