@@ -12,6 +12,8 @@ if __name__=="__main__":
 
     gameplay = Game(Board("main"), players)
 
+    gameplay.set_avatars()
+
     # giant loop
     continue_ = True
     while continue_:

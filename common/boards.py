@@ -8,9 +8,9 @@ CHARACTERS_FOLDER = os.path.join(ROOT_FOLDER, 'game_elements', 'img', 'character
 
 MAIN_BOARD = {
     "background": os.path.join(BOARDS_FOLDER, "board1.png"),
-    "size": (420, 250),
+    "size": (720, 550),
     "offset": [120, 90],
-    "start_pos": [105, 105],
+    "start_pos": [70, 70],
     "dim": [1, 4],
     "square_dir": [
             [1, 1, 1, 1],
