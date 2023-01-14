@@ -56,4 +56,4 @@ def p_sum(pos1, pos2):
     return pos3
 
 def roll_dice():
-    return randint(1,6)
+    return randint(1,4)

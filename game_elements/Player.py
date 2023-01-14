@@ -1,5 +1,6 @@
 from common import *
 import pygame
+from time import sleep
 
 def config_players():
     players = []
@@ -49,23 +50,28 @@ class Player:
         self.offset = offset
 
     def move(self, screen, final_position):
-        final_position = p_sum(final_position, self.offset)
+        #final_position = p_sum(final_position, self.offset)
         self.next_px.change(final_position)
         finished = False
         while not finished:
             finished = True
-            if self.px.x <= self.next_px.x:
+            if self.px.x < self.next_px.x:
                 self.px.x += SPEED[0]
                 finished = False
-            if self.px.y <= self.next_px.y:
+            if self.px.y < self.next_px.y:
                 self.px.y += SPEED[1]
                 finished = False
-            
-            self.draw(screen)
+
+            # this slow down animations
+            sleep(0.01)
+            screen.blit(self.avatar, self.px.p())
             pygame.display.flip()
 
-    def advance(self, n_dice):
-        final_position = [SQUARE_SIZE * n_dice, 0]
+    def advance(self, screen, n_dice):
+        # aqui debes calcular la velocidad que debes sumarle al personaje en funcion de la casilla
+        advance = [SQUARE_SIZE * n_dice, 0]
+        final_position = p_sum(advance, self.px.p())
+        self.move(screen, final_position)
 
     def display_stats(self):
         # this mehtod draws character stats on left side of the canvas

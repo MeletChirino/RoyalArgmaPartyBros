@@ -1,5 +1,6 @@
 import pygame
 from common import *
+from time import sleep
 
 class Game:
     def __init__(self, board, players):
@@ -36,9 +37,11 @@ class Game:
                 pos = p_sum(pos, [CHARACTER_SPACE, 0])
             pygame.display.flip()
         
-        offset = self.offset
+
+        single_offset = [0, 0]
         n = 1
         for player in self.players:
+            global_offset = p_sum(self.offset, self.board.properties["start_pos"])
             print(F"{player}")
             choosen = False
             while not choosen:
@@ -52,26 +55,25 @@ class Game:
                         break # break for loop
             
                 if avatar in AVATARS and choosen:
-                    player.set_offset(offset)
+                    player.set_offset(single_offset)
                     if (n % 3 == 0):
-                        offset = p_sum(offset, [0, CHARACTER_OFFSET])
-                        offset[0] = self.offset[0]
-                    else:
                         # this starts a new line
-                        offset = p_sum(offset, [CHARACTER_OFFSET, 0])
-                    
+                        single_offset = p_sum(single_offset, [0, CHARACTER_OFFSET])
+                        single_offset[0] = 0
+                    else:
+                        # draws a character next to each other
+                        single_offset = p_sum(single_offset, [CHARACTER_OFFSET, 0])
+                    player.set_avatar(avatar)
+                    global_offset = p_sum(single_offset, global_offset)
+                    player.move(self.screen, global_offset)
                     choosen = True
                     n += 1
-                    player.set_avatar(avatar)
-                    start_position = self.board.properties["start_pos"]
-                    player.move(self.screen, start_position)
                 else:
                     print("Character not eligible")
                     choosen = False
 
     def run(self):
         continue_ = True
-        print(F"Turn of {self.players[self.turn]}")
         # --- Get events init
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -82,6 +84,7 @@ class Game:
                     #roll dice
                     n_dice = roll_dice()
                     print(F"DICE = {n_dice}")
+                    self.players[self.turn].advance(self.screen, n_dice)
                     self.turn += 1
                     if self.turn >= self.max_turns:
                         self.turn = 0
@@ -91,7 +94,6 @@ class Game:
         # --- Get events end
 
         # --- Draw Board init
-        print(F"offset = {self.offset}")
         self.board.draw(self.screen, self.offset)
         # --- Draw Board end
 
@@ -108,4 +110,5 @@ class Game:
         pygame.display.flip()
         self.clock.tick(10) # Frames Per Second
         return continue_
+
 
