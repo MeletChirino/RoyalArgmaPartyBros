@@ -2,17 +2,6 @@ from common import *
 import pygame
 from time import sleep
 
-def config_players():
-    players = []
-    players_n = int(input("How many players?\n"))
-    for i in range(players_n):
-        name = input(F"Name of player {i} => ")
-        player = Player(name)
-        players.append(player)
-    for player in players:
-        print(F"Welcome {player.name}")
-    return players
-
 class Position:
     def __init__(self):
         self.x = 0
@@ -63,13 +52,13 @@ class Player:
                 finished = False
 
             # this slow down animations
-            sleep(0.01)
+            #sleep(0.1)
             screen.blit(self.avatar, self.px.p())
             pygame.display.flip()
 
-    def advance(self, screen, n_dice):
+    def advance(self, screen, n_dice, direction):
         # aqui debes calcular la velocidad que debes sumarle al personaje en funcion de la casilla
-        advance = [SQUARE_SIZE * n_dice, 0]
+        advance = [SQUARE_SIZE * n_dice, SQUARE_SIZE * n_dice]
         final_position = p_sum(advance, self.px.p())
         self.move(screen, final_position)
 

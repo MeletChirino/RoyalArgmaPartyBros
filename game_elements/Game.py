@@ -1,114 +1,97 @@
 import pygame
 from common import *
 from time import sleep
+from game_elements.StateMachine import StateMachine
+from game_elements.GameLoop import GameLoop
+from game_elements.Player import Player
 
 class Game:
-    def __init__(self, board, players):
-        self.board = board
-        self.players = players
-        pygame.init()
-        self.offset = board.properties["offset"]
-        self.win_size = [board.size[0] + self.offset[0]*1.3, board.size[1] + self.offset[1]]
-        self.screen = pygame.display.set_mode(self.win_size)
-        self.clock = pygame.time.Clock()
-        self.turn = 0
-        self.max_turns = len(players)
-        print(F"Max turns = {self.max_turns}")
-    
-    def set_avatars(self):
-        self.screen.fill(WHITE)
-        title_font = pygame.font.SysFont("monospace", 40)
-        label = title_font.render("Choose your character", 1, BLACK)
-        self.screen.blit(label, [200, 0])
-        pos = [CHARACTER_SPACE, CHARACTER_SPACE]
-        for character in AVATARS:
-            img = pygame.image.load(AVATARS[character])
-            img = pygame.transform.scale(img, CHARACTER_SIZE)
-            self.screen.blit(img, pos)
-            myfont = pygame.font.SysFont("monospace", 20)
-            label = myfont.render(character, 1, BLACK)
-            self.screen.blit(label, p_sum(pos, [0, 60]))
+    def __init__(self):
+        self.current_state = 0
 
-            # Set cursor for next Character
-            if pos[0] >= (self.win_size[0] - CHARACTER_SPACE - 70):
-                pos[0] = CHARACTER_SPACE
-                pos[1] += CHARACTER_SPACE
-            else:
-                pos = p_sum(pos, [CHARACTER_SPACE, 0])
-            pygame.display.flip()
-        
-
-        single_offset = [0, 0]
-        n = 1
-        for player in self.players:
-            global_offset = p_sum(self.offset, self.board.properties["start_pos"])
-            print(F"{player}")
-            choosen = False
-            while not choosen:
-                choosen = True
-                avatar = input(F"{player} please choose a character\n >>> ")
-                # verify if charater is already choosen
-                for player_ in self.players:
-                    if avatar == player_.av_name:
-                        print(F"{avatar} is already choosen by {player_}")
-                        choosen = False
-                        break # break for loop
-            
-                if avatar in AVATARS and choosen:
-                    player.set_offset(single_offset)
-                    if (n % 3 == 0):
-                        # this starts a new line
-                        single_offset = p_sum(single_offset, [0, CHARACTER_OFFSET])
-                        single_offset[0] = 0
-                    else:
-                        # draws a character next to each other
-                        single_offset = p_sum(single_offset, [CHARACTER_OFFSET, 0])
-                    player.set_avatar(avatar)
-                    global_offset = p_sum(single_offset, global_offset)
-                    player.move(self.screen, global_offset)
-                    choosen = True
-                    n += 1
-                else:
-                    print("Character not eligible")
-                    choosen = False
+        self.gameloop = GameLoop()
+        gameloop_events = [
+            # --- GAMELOOP EVENTS ---
+            WAIT_5S,
+            ITEM_CHOOSEN,
+            ITEM_EVENT_FINISHED,
+            ITEM_NOT_CHOOSEN,
+            DICE_ROLLED,
+            SQUARE_MOVE,
+            SQUARE_EVENT_BEGINGS,
+            SQUARE_EVENT_FINISHED,
+            MOVE_FINISHED,
+            TURN_FINISHED,
+        ]
+        for event in gameloop_events:
+            self.gameloop.attach_event(event)
+        self.continue_ = True        
 
     def run(self):
-        continue_ = True
-        # --- Get events init
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                continue_ = False
-            if event.type == pygame.KEYDOWN:
-                # for more info https://www.pygame.org/docs/ref/key.html
-                if event.key == pygame.K_SPACE:
-                    #roll dice
-                    n_dice = roll_dice()
-                    print(F"DICE = {n_dice}")
-                    self.players[self.turn].advance(self.screen, n_dice)
-                    self.turn += 1
-                    if self.turn >= self.max_turns:
-                        self.turn = 0
-            if event.type == pygame.KEYUP:
-                pass
-        # mouse_pos = pygame.mouse.get_pos()
-        # --- Get events end
+        print(f"GAME ST = {self.current_state}")
+        if self.current_state == PREPARATION:
+            self.gameloop.init(
+                self.config_players(),
+                self.set_board(),
+            )
+            self.gameloop.show_avatars()
+            self.gameloop.set_avatars()
+            GAME_CONFIG_DONE.happen()
 
-        # --- Draw Board init
-        self.board.draw(self.screen, self.offset)
-        # --- Draw Board end
+        elif self.current_state == GAMELOOP:
+            self.gameloop.run()
+        elif self.current_state == GAME_EVENT:
+            # here you have to place a game event
+            pass
+        elif self.current_state == FINISHED:
+                self.continue_ = False
+                self.game_finished()
 
-        # --- Draw players init
-        # Draw stats
+    def transition(self, event):
+        if self.current_state == PREPARATION:
+            if event == GAME_CONFIG_DONE:
+                self.current_state = GAMELOOP
 
-        # Draw players
-        for player in self.players:
-            player.draw(self.screen)
-        
-        # --- Draw players end
+        elif self.current_state == GAMELOOP:
+            if event == GAME_EVENT_BEGINS:
+                self.current_state = GAME_EVENT
 
-        # update screen
-        pygame.display.flip()
-        self.clock.tick(10) # Frames Per Second
-        return continue_
+        elif self.current_state == GAME_EVENT:
+            if event == GAME_EVENT_FINISHED:
+                self.current_state = GAMELOOP
 
+        elif self.current_state == FINISHED:
+            pass
 
+    def set_board(self):
+        print(F"Please Choose a board")
+        for board in BOARDS:
+            print(F"* -> {board}")
+        choosen = False
+        while not choosen:
+            choosen = True
+            board = input("Which one do you like?\n=> ")
+            for board_ in BOARDS:
+                if board == board_:
+                    # board choosen exist
+                    choosen = True
+                    break
+                else:
+                    choosen = False
+            if not choosen:
+                print("Please verify your text")
+        return board
+
+    def config_players(self):
+        players = []
+        players_n = int(input("How many players?\n"))
+        for i in range(players_n):
+            name = input(F"Name of player {i} => ")
+            player = Player(name)
+            players.append(player)
+        for player in players:
+            print(F"Welcome {player.name}")
+        return players
+
+    def attach_event(self, event):
+        event.attach(self)
