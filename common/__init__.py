@@ -1,6 +1,42 @@
 import os
-from .boards import *
+from common.boards import *
 from random import randint
+from game_elements.Events import Event
+
+
+# ---- GAME STATES ----
+PREPARATION = 0
+GAMELOOP = 1
+GAME_EVENT = 2
+FINISHED = 3
+
+# --- GAME EVENTS ---
+GAME_CONFIG_DONE = Event()
+GAME_EVENT_BEGINS = Event()
+GAME_EVENT_FINISHED = Event()
+GAME_FINISHED = Event()
+
+# --- GAMELOOP STATES ---
+PRESENTATION = 0
+CHOOSE_ITEM = 1
+ITEM_EVENT = 2
+ROLL_DICE = 3
+MOVEMENT = 4
+SQUARE_EVENT = 5
+NEXT_PLAYER = 6
+GAME_EVENT = 7
+
+# --- GAMELOOP EVENTS ---
+WAIT_5S = Event()
+ITEM_CHOOSEN = Event()
+ITEM_EVENT_FINISHED = Event()
+ITEM_NOT_CHOOSEN = Event()
+DICE_ROLLED = Event()
+SQUARE_MOVE = Event()
+SQUARE_EVENT_BEGINGS = Event()
+SQUARE_EVENT_FINISHED = Event()
+MOVE_FINISHED = Event()
+TURN_FINISHED = Event()
 
 # --- SIZES ---
 SQUARE_SIZE = 120
@@ -42,6 +78,7 @@ Boards are defined in boards.py within this same folder
 """
 BOARDS = {
     "main": MAIN_BOARD,
+    "monopoly": MONOPOLY_BOARD,
 }
 
 # --- COLORS ---
