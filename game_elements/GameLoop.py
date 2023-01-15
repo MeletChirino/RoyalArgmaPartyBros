@@ -1,4 +1,5 @@
 import pygame
+from time import sleep, time
 from game_elements.Board import Board
 from common import *
 
@@ -15,7 +16,6 @@ class GameLoop:
             self.board.size[0] + self.offset[0] * 1.3, # x
             self.board.size[1] + self.offset[1] # y
             ]
-        self.screen = pygame.display.set_mode(self.win_size)
 
         # Setting up players
         self.players = players
@@ -25,34 +25,51 @@ class GameLoop:
 
         self.clock = pygame.time.Clock()
 
+    def start(self):
+        self.screen = pygame.display.set_mode(self.win_size)
+
     def run(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.continue_ = False
+        #print(f"GAMELOOP ST = {self.current_state}")
+        for event in pygame.event.get():
+            print(event)
+
         if self.current_state == PRESENTATION:
-            # Here you say who's the player and show its items
-            pass
+            self.presentation()
+
         elif self.current_state == CHOOSE_ITEM:
             # This gives the player the choice wether 
             # to roll the dice or use an item
-            pass
+            ITEM_NOT_CHOOSEN.happen()
         elif self.current_state == ITEM_EVENT:
             # If player choose an item here happens something
             pass
         elif self.current_state == ROLL_DICE:
-            # here you roll the dice, only roll the dice and store the number
-            pass
+            self.dice_n = roll_dice()
+            DICE_ROLLED.happen()
+
         elif self.current_state == MOVEMENT:
-            # here player moves square by step, changing speed, and getting
-            # square events. When dice_n goes to 0 change the state
-            pass
+            self.movement()
+            
         elif self.current_state == SQUARE_EVENT:
             # Here we see the event of the last square of the player
-            pass
+            self.square_event()
         elif self.current_state == NEXT_PLAYER:
             # Here we pass the turn to the next player, if its the last one we pass
             # to a game event
-            pass
+            self.turn += 1
+            if self.turn >= self.max_turns:
+                self.turn = 0
+                self.current_state = GAME_EVENT
+            else:
+                self.current_state = PRESENTATION
+                
         elif self.current_state == GAME_EVENT:
             # Mini Game event, present the game and wait for results. Then pass the turn to next player
-            pass
+            print("Play jenga")
+            TURN_FINISHED.happen()
             
         # --- Draw Board init
         self.board.draw(self.screen, self.offset)
@@ -68,8 +85,30 @@ class GameLoop:
         # --- Draw players end
 
         # update screen
-        pygame.display.flip()
+        pygame.display.update()
         self.clock.tick(10) # Frames Per Second
+
+    def square_event(self):
+        player = self.players[self.turn]
+        x = player.pos.x
+        y = player.pos.y
+        ev = self.board.properties["square_ev"][y][x]
+        print(f"{player} event {ev}")
+        ev(player)
+        SQUARE_EVENT_FINISHED.happen()
+
+    def movement(self):
+        if(self.dice_n == 0):
+            SQUARE_EVENT_BEGINGS.happen()
+            #MOVE_FINISHED.happen()
+            return
+
+        player = self.players[self.turn]
+        x = player.pos.x
+        y = player.pos.y
+        dir = self.board.properties["square_dir"][y][x]
+        player.advance(dir)
+        self.dice_n -= 1
 
     def transition(self, event):
         if self.current_state == PRESENTATION:
@@ -106,16 +145,44 @@ class GameLoop:
             if event == SQUARE_EVENT_FINISHED:
                 self.current_state = NEXT_PLAYER
 
-        elif self.current_state == NEXT_PLAYER:
-            self.turn += 1
-            if self.turn >= self.max_turns:
-                self.turn = 0
-                self.current_state = GAME_EVENT
-            else:
-                self.current_state = PRESENTATION
+        #elif self.current_state == NEXT_PLAYER:
+
         elif self.current_state == GAME_EVENT:
             if event == TURN_FINISHED:
                 self.current_state = PRESENTATION 
+
+    def presentation(self):
+        # Drawing Rectangle
+        timeout = False
+        init_time = time()
+        while(not timeout):
+            rect = pygame.Rect(
+                self.board.properties["presentation_rect"][0], # x coord
+                self.board.properties["presentation_rect"][1], # y coord
+                self.board.properties["presentation_rect_w"], # width
+                self.board.properties["presentation_rect_h"], # height
+            )
+            pygame.draw.rect(self.screen, WHITE, rect)
+
+            title_font = pygame.font.SysFont(
+                self.board.properties["presentation_font"],
+                self.board.properties["presentation_font_size"]
+                )
+            player = self.players[self.turn]
+            label = title_font.render(F"{player}'s turn", 1, BLACK)
+            self.screen.blit(
+                label,
+                self.board.properties["presentation_label_coord"]
+                )
+            #pygame.display.flip()
+            pygame.display.update()
+            self.clock.tick(10) # Frames Per Second
+            current_time = time() - init_time
+            #print(F"time = {current_time - init_time}")
+            if (current_time >= 5):
+                print("timeout")
+                WAIT_5S.happen()
+                timeout = True
 
     def show_avatars(self):
         self.screen.fill(WHITE)
@@ -137,7 +204,7 @@ class GameLoop:
                 pos[1] += CHARACTER_SPACE
             else:
                 pos = p_sum(pos, [CHARACTER_SPACE, 0])
-            pygame.display.flip()
+            pygame.display.update()
 
     def set_avatars(self):
         single_offset = [0, 0]
@@ -167,31 +234,25 @@ class GameLoop:
                         single_offset = p_sum(single_offset, [CHARACTER_OFFSET, 0])
                     player.set_avatar(avatar)
                     global_offset = p_sum(single_offset, global_offset)
-                    player.move(self.screen, global_offset)
+                    player.move(global_offset)
                     choosen = True
                     n += 1
                 else:
                     print("Character not eligible")
                     choosen = False
 
-    def gameloop(self):
-        continue_ = True
+    def roll_dice(self):
         # --- Get events init
+        print(F"Rolling dice")
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                continue_ = False
+            print(event)
             if event.type == pygame.KEYDOWN:
                 # for more info https://www.pygame.org/docs/ref/key.html
                 if event.key == pygame.K_SPACE:
                     #roll dice
-                    n_dice = roll_dice()
-                    print(F"DICE = {n_dice}")
-                    self.players[self.turn].advance(self.screen, n_dice)
-                    self.turn += 1
-                    if self.turn >= self.max_turns:
-                        self.turn = 0
-            if event.type == pygame.KEYUP:
-                pass
+                    self.dice_n = roll_dice()
+                    print(F"DICE = {self.dice_n}")
+                    DICE_ROLLED.happen()
         # mouse_pos = pygame.mouse.get_pos()
         # --- Get events end
 

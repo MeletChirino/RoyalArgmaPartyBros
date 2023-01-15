@@ -28,12 +28,13 @@ class Game:
         self.continue_ = True        
 
     def run(self):
-        print(f"GAME ST = {self.current_state}")
+        #print(f"GAME ST = {self.current_state}")
         if self.current_state == PREPARATION:
             self.gameloop.init(
                 self.config_players(),
                 self.set_board(),
             )
+            self.gameloop.start()
             self.gameloop.show_avatars()
             self.gameloop.set_avatars()
             GAME_CONFIG_DONE.happen()

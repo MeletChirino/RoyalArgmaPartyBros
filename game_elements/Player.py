@@ -1,6 +1,6 @@
 from common import *
 import pygame
-from time import sleep
+#from time import sleep
 
 class Position:
     def __init__(self):
@@ -20,13 +20,15 @@ class Position:
 class Player:
     def __init__(self, name_):
         self.name = name_
-        self.current_pos = Position()
+        self.pos = Position()
         self.next_pos = Position()
         self.px = Position()
         self.next_px = Position()
         self.coins = 20
         self.offset = [0, 0]
         self.av_name = ""
+        self.moving = False
+        self.speed = [0, 0]
 
     def set_avatar(self, avatar):
         img_file = AVATARS[avatar]
@@ -38,29 +40,20 @@ class Player:
     def set_offset(self, offset):
         self.offset = offset
 
-    def move(self, screen, final_position):
-        #final_position = p_sum(final_position, self.offset)
-        self.next_px.change(final_position)
-        finished = False
-        while not finished:
-            finished = True
-            if self.px.x < self.next_px.x:
-                self.px.x += SPEED[0]
-                finished = False
-            if self.px.y < self.next_px.y:
-                self.px.y += SPEED[1]
-                finished = False
+    def move(self, final_position):
+        self.px.change(final_position)
 
-            # this slow down animations
-            #sleep(0.1)
-            screen.blit(self.avatar, self.px.p())
-            pygame.display.flip()
-
-    def advance(self, screen, n_dice, direction):
+    def advance(self, direction):
         # aqui debes calcular la velocidad que debes sumarle al personaje en funcion de la casilla
-        advance = [SQUARE_SIZE * n_dice, SQUARE_SIZE * n_dice]
-        final_position = p_sum(advance, self.px.p())
-        self.move(screen, final_position)
+        advance_px = [
+            SQUARE_SIZE * direction[0],
+            SQUARE_SIZE * direction[1]
+            ]
+        final_position = p_sum(advance_px, self.px.p())
+        self.next_px.change(final_position)
+        self.move(final_position)
+        self.pos.x += direction[0]
+        self.pos.y += direction[1]
 
     def display_stats(self):
         # this mehtod draws character stats on left side of the canvas
