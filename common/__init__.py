@@ -41,7 +41,6 @@ TURN_FINISHED = Event()
 # --- SIZES ---
 SQUARE_SIZE = 120
 CHARACTER_SIZE = [40, 40]
-PIC_SIZE = [70, 70]
 SPEED = [1, 1]
 
 CHARACTER_SPACE = 120
@@ -49,13 +48,11 @@ CHARACTER_OFFSET = 40
 
 # --- AVATAR LIST ---
 AVATARS = {
-    #"homer": os.path.join(CHARACTERS_FOLDER, "homer.png"),
     "madeline": os.path.join(CHARACTERS_FOLDER, "madeline.png"),
     "banjo": os.path.join(CHARACTERS_FOLDER, "banjo.png"),
     "donkey": os.path.join(CHARACTERS_FOLDER, "donkey.png"),
     "eren": os.path.join(CHARACTERS_FOLDER, "eren.png"),
     "frisk": os.path.join(CHARACTERS_FOLDER, "frisk.png"),
-    "spider": os.path.join(CHARACTERS_FOLDER, "spider_man.gif"),
     "ganondorf": os.path.join(CHARACTERS_FOLDER, "ganondorf.png"),
     "joker": os.path.join(CHARACTERS_FOLDER, "joker.png"),
     "kirby": os.path.join(CHARACTERS_FOLDER, "kirby.png"),
@@ -69,7 +66,6 @@ AVATARS = {
     "vash": os.path.join(CHARACTERS_FOLDER, "vash.gif"),
     "zelda": os.path.join(CHARACTERS_FOLDER, "zelda.png"),
     "spider": os.path.join(CHARACTERS_FOLDER, "spider_man.gif"),
-
 }
 
 # --- BOARDS LIST ----
@@ -81,10 +77,38 @@ BOARDS = {
     "monopoly": MONOPOLY_BOARD,
 }
 
+# --- STATS ---
+
+PIC_SIZE = [40, 40]
+STAT_Y_OFFSET = 120
+
+STAT_PROPERTIES = {
+    # Main square opt
+    "rect_size": [150, 100],
+    "rect_offset": [40, 10],
+    # Avatar properties
+    "avatar_offset": 10,
+    "avatar_size": [20, 60],
+    # Name properties
+    "name_offset": [70, 0],
+    "name_font_size": 25,
+    "name_font": "monospace", # This can could be a board propertie
+    # Coins 
+    "coins_offset": [70, 20],
+    "coins_font_size": 20,
+    "coins_font": "monospace", # This can could be a board propertie
+    # Items
+    "items_offset": [150, 20],
+    "items_size": [20, 20],
+    "items_separation": 20,
+}
+
+
 # --- COLORS ---
 BLACK = (  0,   0,   0)
-RED =   (255,   0,   0)
+RED   = (255,   0,   0)
 WHITE = (255, 255, 255)
+GRAY  = (128, 128, 128)
 
 def p_sum(pos1, pos2):
     pos3 = [0, 0]

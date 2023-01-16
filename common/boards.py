@@ -45,7 +45,7 @@ MAIN_BOARD = {
     "square_ev": [
             [1, 1, 1, 1],
             ],
-    "presentation_rect": [120, 90],
+    "presentation_rect": [200, 90],
     "presentation_rect_w": 800,
     "presentation_rect_h": 300,
     "presentation_font": "monospace",
@@ -71,7 +71,7 @@ MONOPOLY_BOARD = {
             [X, O, O, O, O, P],
             [C, C, M, X, X, M],
             ],
-    "presentation_rect": [120, 90],
+    "presentation_rect": [200, 90],
     "presentation_rect_w": 800,
     "presentation_rect_h": 300,
     "presentation_font": "monospace",

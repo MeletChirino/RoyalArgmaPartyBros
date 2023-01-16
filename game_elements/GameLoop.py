@@ -77,16 +77,37 @@ class GameLoop:
 
         # --- Draw players init
         # Draw stats
+        n = 0
+        for pos in range(1, self.max_turns):
+            for player in self.players:
+                if player.game_position == pos:
+                    player.display_stats(self.screen, n)
+                    n += 1
 
         # Draw players
         for player in self.players:
             player.draw(self.screen)
         
+        # Reorder players
+        self.reorder_players()
         # --- Draw players end
 
         # update screen
         pygame.display.update()
         self.clock.tick(10) # Frames Per Second
+
+    def reorder_players(self):
+        for player in self.players:
+            order = 1
+            for player_compare in self.players:
+                if (player.coins < player_compare.coins):
+                    order += 1
+            player.order = order
+
+    def get_player_by_pos(self, position):
+        for player in self.players:
+            if (player.game_position == position):
+                return player
 
     def square_event(self):
         player = self.players[self.turn]

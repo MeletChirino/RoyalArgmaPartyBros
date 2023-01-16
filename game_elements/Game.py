@@ -1,7 +1,6 @@
 import pygame
 from common import *
 from time import sleep
-from game_elements.StateMachine import StateMachine
 from game_elements.GameLoop import GameLoop
 from game_elements.Player import Player
 
@@ -37,6 +36,10 @@ class Game:
             self.gameloop.start()
             self.gameloop.show_avatars()
             self.gameloop.set_avatars()
+            i = 1
+            for player in self.gameloop.players:
+                player.game_position = i
+                i += 1
             GAME_CONFIG_DONE.happen()
 
         elif self.current_state == GAMELOOP:

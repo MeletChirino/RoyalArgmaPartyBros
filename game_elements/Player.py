@@ -29,6 +29,8 @@ class Player:
         self.av_name = ""
         self.moving = False
         self.speed = [0, 0]
+        self.game_position = 0
+        self.items = []
 
     def set_avatar(self, avatar):
         img_file = AVATARS[avatar]
@@ -55,12 +57,83 @@ class Player:
         self.pos.x += direction[0]
         self.pos.y += direction[1]
 
-    def display_stats(self):
-        # this mehtod draws character stats on left side of the canvas
-        pass
+    def display_stats(self, screen, i_):
+        # Draw the rectangle
+        main_offset = [
+            STAT_PROPERTIES["rect_offset"][0],
+            STAT_PROPERTIES["rect_offset"][1] +
+                (i_) * STAT_Y_OFFSET
+            ]
+        rect = pygame.Rect(
+            main_offset[0], # x coord
+            main_offset[1], # y coord
+            STAT_PROPERTIES["rect_size"][0], # width
+            STAT_PROPERTIES["rect_size"][1], # height
+            )
+        pygame.draw.rect(screen, GRAY, rect)
+
+        # Draw player's avatar
+        offset = [
+            main_offset[0] + STAT_PROPERTIES["avatar_offset"],
+            main_offset[1] + 20
+            ]
+        screen.blit(self.pic, offset)
+
+        # Draw Player's name
+        offset = [
+            main_offset[0] + STAT_PROPERTIES["name_offset"][0],
+            main_offset[1] + STAT_PROPERTIES["name_offset"][1]
+        ]
+        title_font = pygame.font.SysFont(
+            #self.board.properties["presentation_font"],
+            #self.board.properties["presentation_font_size"]
+            STAT_PROPERTIES["name_font"],
+            STAT_PROPERTIES["name_font_size"],
+            )
+        label = title_font.render(F"{self.name}", 1, BLACK)
+        screen.blit(
+            label,
+            offset
+            )
+
+        # Draw coins
+        offset = [
+            main_offset[0] + STAT_PROPERTIES["coins_offset"][0],
+            main_offset[1] + STAT_PROPERTIES["coins_offset"][1]
+        ]
+        title_font = pygame.font.SysFont(
+            #self.board.properties["presentation_font"],
+            #self.board.properties["presentation_font_size"]
+            STAT_PROPERTIES["coins_font"],
+            STAT_PROPERTIES["coins_font_size"],
+            )
+        label = title_font.render(F"{self.coins}", 1, BLACK)
+        screen.blit(
+            label,
+            offset
+            )
+
+        # Draw items
+        i = 0
+        offset = [
+            main_offset[0] + STAT_PROPERTIES["items_offset"][0],
+            main_offset[1] + STAT_PROPERTIES["items_offset"][1]
+            ]
+        for item in self.items:
+            if ((i % 3) == 0):
+                offset[1] += i * STAT_PROPERTIES["items_separation"]
+                offset[0] = main_offset[0] + STAT_PROPERTIES["avatar_offset"][0]
+            else:
+                offset[0] += i * STAT_PROPERTIES["items_separation"]
+
+            item_logo = pygame.transform.scale(
+                item.logo,
+                PIC_SIZE
+                )
+            screen.blit(item_logo, offset)
 
     def draw(self, screen):
         screen.blit(self.avatar, self.px.p())
 
     def __str__(self):
-        return F"{self.name}"
+        return F"{self.name} C={self.coins} p.{self.game_position}"
