@@ -95,7 +95,7 @@ class Player:
             STAT_PROPERTIES["name_font"],
             STAT_PROPERTIES["name_font_size"],
             )
-        label = title_font.render(F"{self.name}", 1, BLACK)
+        label = title_font.render(F"{self.game_position}.{self.name}", 1, BLACK)
         screen.blit(
             label,
             offset
@@ -136,6 +136,7 @@ class Player:
                 PIC_SIZE
                 )
             screen.blit(item_logo, offset)
+        pygame.display.update([rect])
 
     def draw(self, screen):
         screen.blit(self.avatar, self.px.p())

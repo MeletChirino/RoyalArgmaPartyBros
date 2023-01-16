@@ -84,21 +84,21 @@ STAT_Y_OFFSET = 120
 
 STAT_PROPERTIES = {
     # Main square opt
-    "rect_size": [150, 100],
-    "rect_offset": [40, 10],
+    "rect_size": [170, 100],
+    "rect_offset": [10, 10],
     # Avatar properties
     "avatar_offset": 10,
     "avatar_size": [20, 60],
     # Name properties
-    "name_offset": [70, 0],
+    "name_offset": [50, 0],
     "name_font_size": 25,
     "name_font": "monospace", # This can could be a board propertie
     # Coins 
-    "coins_offset": [70, 20],
+    "coins_offset": [60, 20],
     "coins_font_size": 20,
     "coins_font": "monospace", # This can could be a board propertie
     # Items
-    "items_offset": [150, 20],
+    "items_offset": [90, 20],
     "items_size": [20, 20],
     "items_separation": 20,
 }

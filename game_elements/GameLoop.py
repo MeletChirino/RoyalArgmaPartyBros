@@ -80,7 +80,7 @@ class GameLoop:
         self.reorder_players()
         # Draw stats
         n = 0
-        for pos in range(1, self.max_turns):
+        for pos in range(self.max_turns + 1):
             for player in self.players:
                 if player.game_position == pos:
                     player.display_stats(self.screen, n)
@@ -94,7 +94,7 @@ class GameLoop:
 
         # update screen
         pygame.display.update()
-        self.clock.tick(10) # Frames Per Second
+        self.clock.tick(1) # Frames Per Second
 
     def reorder_players(self):
         for player in self.players:
@@ -183,6 +183,7 @@ class GameLoop:
                 self.board.properties["presentation_rect_w"], # width
                 self.board.properties["presentation_rect_h"], # height
             )
+            # TODO: Replace this rectangle with a beautiful draw
             pygame.draw.rect(self.screen, GRAY, rect)
 
             title_font = pygame.font.SysFont(
@@ -190,17 +191,15 @@ class GameLoop:
                 self.board.properties["presentation_font_size"]
                 )
             player = self.players[self.turn]
-            label = title_font.render(F"{player}'s turn", 1, BLACK)
+            label = title_font.render(F"{player.name}'s turn", 1, BLACK)
             self.screen.blit(
                 label,
                 self.board.properties["presentation_label_coord"]
                 )
-            #pygame.display.flip()
-            pygame.display.update()
-            self.clock.tick(10) # Frames Per Second
+            pygame.display.update([rect])
             current_time = time() - init_time
-            #print(F"time = {current_time - init_time}")
-            if (current_time >= 5):
+            self.clock.tick(1) # Frames Per Second
+            if (current_time >= 3):
                 print("timeout")
                 WAIT_5S.happen()
                 timeout = True
@@ -225,7 +224,7 @@ class GameLoop:
                 pos[1] += CHARACTER_SPACE
             else:
                 pos = p_sum(pos, [CHARACTER_SPACE, 0])
-            pygame.display.update()
+            pygame.display.flip()
 
     def set_avatars(self):
         single_offset = [0, 0]
