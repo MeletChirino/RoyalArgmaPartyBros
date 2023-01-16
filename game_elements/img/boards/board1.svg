@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="841mm"
+   height="1189mm"
+   viewBox="0 0 841 1189"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="board1.svg"
+   inkscape:export-filename="board1.png"
+   inkscape:export-xdpi="96.882858"
+   inkscape:export-ydpi="96.882858"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0759173"
+     inkscape:cx="3421.2666"
+     inkscape:cy="115.25049"
+     inkscape:window-width="1200"
+     inkscape:window-height="1849"
+     inkscape:window-x="4472"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#008000;stroke:#000000;stroke-width:0.936954"
+       id="rect61"
+       width="30.813046"
+       height="30.813046"
+       x="18.989311"
+       y="18.989311" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1.43704"
+       id="rect63"
+       width="30.312963"
+       height="30.312963"
+       x="82.739357"
+       y="19.239351" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1.61088"
+       id="rect65"
+       width="30.139118"
+       height="30.13912"
+       x="51.076275"
+       y="19.326275" />
+    <rect
+       style="fill:#ff0000;stroke:#000000;stroke-width:1.00064"
+       id="rect277"
+       width="30.749359"
+       height="30.749359"
+       x="114.27115"
+       y="19.021154" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:2.81497"
+       id="rect339"
+       width="224.7267"
+       height="110.95586"
+       x="1.4074786"
+       y="1.4074786" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:'Berlin Sans FB Demi';-inkscape-font-specification:'Berlin Sans FB Demi';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="18.045412"
+       y="73.520035"
+       id="text404"><tspan
+         sodipodi:role="line"
+         id="tspan402"
+         x="18.045412"
+         y="73.520035"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Berlin Sans FB Demi';-inkscape-font-specification:'Berlin Sans FB Demi';stroke-width:0.264583">RoyalArgmaPartyBros</tspan><tspan
+         sodipodi:role="line"
+         x="18.045412"
+         y="86.749161"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Berlin Sans FB Demi';-inkscape-font-specification:'Berlin Sans FB Demi';stroke-width:0.264583"
+         id="tspan456" /></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1.43704"
+       id="rect63-9"
+       width="30.312963"
+       height="30.312963"
+       x="146.23935"
+       y="19.239353" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1.43704"
+       id="rect63-6"
+       width="30.312963"
+       height="30.312963"
+       x="177.98935"
+       y="19.239353" />
+  </g>
+</svg>
