@@ -76,5 +76,5 @@ MONOPOLY_BOARD = {
     "presentation_rect_h": 300,
     "presentation_font": "monospace",
     "presentation_font_size": 70,
-    "presentation_label_coord": [150, 120],
+    "presentation_label_coord": [200, 120],
 }

@@ -76,6 +76,8 @@ class GameLoop:
         # --- Draw Board end
 
         # --- Draw players init
+        # Reorder players
+        self.reorder_players()
         # Draw stats
         n = 0
         for pos in range(1, self.max_turns):
@@ -87,9 +89,7 @@ class GameLoop:
         # Draw players
         for player in self.players:
             player.draw(self.screen)
-        
-        # Reorder players
-        self.reorder_players()
+
         # --- Draw players end
 
         # update screen
@@ -102,7 +102,7 @@ class GameLoop:
             for player_compare in self.players:
                 if (player.coins < player_compare.coins):
                     order += 1
-            player.order = order
+            player.change_order(order)
 
     def get_player_by_pos(self, position):
         for player in self.players:
@@ -183,7 +183,7 @@ class GameLoop:
                 self.board.properties["presentation_rect_w"], # width
                 self.board.properties["presentation_rect_h"], # height
             )
-            pygame.draw.rect(self.screen, WHITE, rect)
+            pygame.draw.rect(self.screen, GRAY, rect)
 
             title_font = pygame.font.SysFont(
                 self.board.properties["presentation_font"],

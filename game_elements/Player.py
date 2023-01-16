@@ -57,6 +57,11 @@ class Player:
         self.pos.x += direction[0]
         self.pos.y += direction[1]
 
+    def change_order(self, new_order):
+        if new_order != self.game_position:
+            print(f"{self.name} p.{self.game_position} -> p.{new_order}")
+            self.game_position = new_order
+
     def display_stats(self, screen, i_):
         # Draw the rectangle
         main_offset = [
