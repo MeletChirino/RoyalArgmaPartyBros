@@ -30,11 +30,10 @@ class GameLoop:
 
     def run(self):
         for event in pygame.event.get():
+            print(event)
             if event.type == pygame.QUIT:
                 self.continue_ = False
         #print(f"GAMELOOP ST = {self.current_state}")
-        for event in pygame.event.get():
-            print(event)
 
         if self.current_state == PRESENTATION:
             self.presentation()
@@ -175,7 +174,7 @@ class GameLoop:
     def presentation(self):
         # Drawing Rectangle
         timeout = False
-        init_time = time()
+        init_time = pygame.time.get_ticks()
         while(not timeout):
             rect = pygame.Rect(
                 self.board.properties["presentation_rect"][0], # x coord
@@ -197,9 +196,9 @@ class GameLoop:
                 self.board.properties["presentation_label_coord"]
                 )
             pygame.display.update([rect])
-            current_time = time() - init_time
+            current_time = pygame.time.get_ticks() - init_time
             self.clock.tick(1) # Frames Per Second
-            if (current_time >= 3):
+            if (current_time >= 3000):
                 print("timeout")
                 WAIT_5S.happen()
                 timeout = True
