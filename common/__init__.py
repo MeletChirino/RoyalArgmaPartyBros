@@ -1,7 +1,19 @@
 import os
-from common.boards import *
+import json
 from random import randint
-from game_elements.Events import Event
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FILE = os.path.join(BASE_DIR, 'config.json')
+
+with open(FILE) as config_file:
+    config = json.load(config_file)
+
+if config['platform'] == "DJANGO":
+    from apps.RoyalArgmaPartyBros.common.boards import *
+    from apps.RoyalArgmaPartyBros.game_elements.Events import Event
+else:
+    from common.boards import *
+    from game_elements.Events import Event
 
 
 # ---- GAME STATES ----
