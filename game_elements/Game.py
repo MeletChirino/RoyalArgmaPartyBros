@@ -10,8 +10,8 @@ from game_elements.Transition import Tr
 class Game:
     def __init__(self, **kwargs):
         self.current_state = 0
-
         self.gameloop = GameLoop()
+        self.players = []
         self.trans_info = {
             # transitions info
             PREPARATION: [
@@ -57,14 +57,8 @@ class Game:
     def run(self):
         print(f"GAME ST = {self.current_state}")
         if self.current_state == PREPARATION:
-            self.gameloop.set_board("monopoly")
-            players = [
-                Player("melet", "vash"),
-                Player("Camila", "zelda"),
-                Player("Mariel", "kirby"),
-                Player("Thiz", "tingle")
-            ]
-            for player in players:
+            self.gameloop.set_board(self.board)
+            for player in self.players:
                 self.gameloop.add_player(player)
             GAME_CONFIG_DONE.happen()
 
@@ -83,24 +77,11 @@ class Game:
             if transition.match_ev(event):
                 self.current_state = transition.next_st()
 
-    def set_board(self):
-        print(F"Please Choose a board")
-        for board in BOARDS:
-            print(F"* -> {board}")
-        choosen = False
-        while not choosen:
-            choosen = True
-            board = input("Which one do you like?\n=> ")
-            for board_ in BOARDS:
-                if board == board_:
-                    # board choosen exist
-                    choosen = True
-                    break
-                else:
-                    choosen = False
-            if not choosen:
-                print("Please verify your text")
-        return board
+    def add_player(self, player):
+        self.players.append(player)
+
+    def set_board(self, board):
+        self.board = board
 
     def config_players(self):
         players = []
