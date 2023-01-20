@@ -1,12 +1,71 @@
 import pygame
 from time import sleep, time
-from game_elements.Board import Board
+
+# game components
 from common import *
+from game_elements.Board import Board
+from game_elements.Transition import Tr
+
 
 class GameLoop:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.current_state = 0
         pygame.init()
+        self.name = ""
+        self.save_kwargs(self.name, 'name', kwargs)
+        self.verbose = ""
+        self.save_kwargs(self.verbose, 'verbose', kwargs)
+        self.description = ""
+        self.save_kwargs(self.description, 'description', kwargs)
+
+        self.trans_info = {
+            # transitions info
+            PRESENTATION: [
+                Tr(WAIT_5S, CHOOSE_ITEM),
+                ],
+            CHOOSE_ITEM: [
+                Tr(ITEM_CHOOSEN, ITEM_EVENT),
+                Tr(ITEM_NOT_CHOOSEN, ROLL_DICE),
+                ],
+            ITEM_EVENT: [
+                Tr(ITEM_EVENT_FINISHED, ROLL_DICE),
+                ],
+            ROLL_DICE: [
+                Tr(DICE_ROLLED, MOVEMENT),
+                ],
+            MOVEMENT: [
+                Tr(SQUARE_MOVE, MOVEMENT),
+                Tr(SQUARE_EVENT_BEGINGS, SQUARE_EVENT),
+                Tr(MOVE_FINISHED, NEXT_PLAYER),
+                ],
+            SQUARE_EVENT: [
+                Tr(SQUARE_EVENT_FINISHED, NEXT_PLAYER),
+                ],
+            GAME_EVENT: [
+                Tr(TURN_FINISHED, PRESENTATION),
+            ]
+        }
+
+        self.run_info = {
+            START_TURN: self.start_turn,
+            # Presentacion muestra el nombre del jugador (notifica al server)
+            PRESENTATION: self.presentation,
+            # Aqui es por si el jugador quiere escoger un item que tenga
+            CHOOSE_ITEM: self.item_event,
+            # Aqui espera a que el jugador escoja un Item
+            ITEM_EVENT: None, # Todavia no tengo ni la menor idea de que hacer aqui
+            # Este es el espacio donde el item hace efecto
+            ROLL_DICE: self.roll_dice,
+            # Tiras el dado
+            MOVEMENT: self.movement,
+            # Se mueve
+            SQUARE_EVENT: self.square_event,
+            # Si en la casilla hay algun evento, pasa aqui
+            NEXT_PLAYER: self.next_player,
+            # Estado que da paso al sgte jugador, si lo hay
+            GAME_EVENT: self.game_event,
+            # Aqui pasan los minijuegos
+        }
 
     def init(self, players, board):
         # Setting up board
@@ -24,9 +83,6 @@ class GameLoop:
         print(F"Max turns = {self.max_turns}")
 
         self.clock = pygame.time.Clock()
-        self.save_kwargs(self.name, 'name', kwargs)
-        self.save_kwargs(self.verbose, 'verbose', kwargs)
-        self.save_kwargs(self.description, 'description', kwargs)
     
     def save_kwargs(self, val, key, kwargs):
         if key in kwargs.keys():
@@ -41,48 +97,21 @@ class GameLoop:
             print(event)
             if event.type == pygame.QUIT:
                 self.continue_ = False
-        #print(f"GAMELOOP ST = {self.current_state}")
+        print(f"GAMELOOP ST = {self.current_state}")
 
-        if self.current_state == PRESENTATION:
-            self.presentation()
+        st_function = self.run_info[self.current_state]
+        st_function()
 
-        elif self.current_state == CHOOSE_ITEM:
-            # This gives the player the choice wether 
-            # to roll the dice or use an item
-            ITEM_NOT_CHOOSEN.happen()
-        elif self.current_state == ITEM_EVENT:
-            # If player choose an item here happens something
-            pass
-        elif self.current_state == ROLL_DICE:
-            self.dice_n = roll_dice()
-            DICE_ROLLED.happen()
-
-        elif self.current_state == MOVEMENT:
-            self.movement()
-            
-        elif self.current_state == SQUARE_EVENT:
-            # Here we see the event of the last square of the player
-            self.square_event()
-        elif self.current_state == NEXT_PLAYER:
-            # Here we pass the turn to the next player, if its the last one we pass
-            # to a game event
-            self.turn += 1
-            if self.turn >= self.max_turns:
-                self.turn = 0
-                self.current_state = GAME_EVENT
-            else:
-                self.current_state = PRESENTATION
-                
-        elif self.current_state == GAME_EVENT:
-            # Mini Game event, present the game and wait for results. Then pass the turn to next player
-            print("Play jenga")
-            TURN_FINISHED.happen()
-            
         # --- Draw Board init
         self.board.draw(self.screen, self.offset)
-        # --- Draw Board end
+        self.draw_stats()
+        self.draw_players()
+    
+        # update screen
+        pygame.display.update()
+        self.clock.tick(1) # Frames Per Second
 
-        # --- Draw players init
+    def draw_stats(self):
         # Reorder players
         self.reorder_players()
         # Draw stats
@@ -92,16 +121,11 @@ class GameLoop:
                 if player.game_position == pos:
                     player.display_stats(self.screen, n)
                     n += 1
-
+    
+    def draw_players(self):
         # Draw players
         for player in self.players:
             player.draw(self.screen)
-
-        # --- Draw players end
-
-        # update screen
-        pygame.display.update()
-        self.clock.tick(1) # Frames Per Second
 
     def reorder_players(self):
         for player in self.players:
@@ -139,45 +163,10 @@ class GameLoop:
         self.dice_n -= 1
 
     def transition(self, event):
-        if self.current_state == PRESENTATION:
-            if event == WAIT_5S:
-                self.current_state = CHOOSE_ITEM
-
-        elif self.current_state == CHOOSE_ITEM:
-            if event == ITEM_CHOOSEN:
-                self.current_state = ITEM_EVENT
-
-            if event == ITEM_NOT_CHOOSEN:
-                self.current_state = ROLL_DICE
-
-        elif self.current_state == ITEM_EVENT:
-            if event == ITEM_EVENT_FINISHED:
-                self.current_state = ROLL_DICE
-
-        elif self.current_state == ROLL_DICE:
-            if event == DICE_ROLLED:
-                self.current_state = MOVEMENT
-
-        elif self.current_state == MOVEMENT:
-            if event == SQUARE_MOVE:
-                # dice_n -= 1
-                self.current_state = MOVEMENT
-
-            if event == SQUARE_EVENT_BEGINGS:
-                self.current_state = SQUARE_EVENT
-
-            if event == MOVE_FINISHED:
-                self.current_state = NEXT_PLAYER
-
-        elif self.current_state == SQUARE_EVENT:
-            if event == SQUARE_EVENT_FINISHED:
-                self.current_state = NEXT_PLAYER
-
-        #elif self.current_state == NEXT_PLAYER:
-
-        elif self.current_state == GAME_EVENT:
-            if event == TURN_FINISHED:
-                self.current_state = PRESENTATION 
+        transitions = self.trans_info[self.current_state]
+        for transition in transitions:
+            if transition.match_ev(event):
+                self.current_state = transition.next_st()
 
     def presentation(self):
         # Drawing Rectangle
@@ -271,17 +260,40 @@ class GameLoop:
     def roll_dice(self):
         # --- Get events init
         print(F"Rolling dice")
+        self.dice_n = roll_dice()
+        print(F"DICE = {self.dice_n}")
+        DICE_ROLLED.happen()
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.KEYDOWN:
                 # for more info https://www.pygame.org/docs/ref/key.html
                 if event.key == pygame.K_SPACE:
+                    pass
                     #roll dice
-                    self.dice_n = roll_dice()
-                    print(F"DICE = {self.dice_n}")
-                    DICE_ROLLED.happen()
+
         # mouse_pos = pygame.mouse.get_pos()
         # --- Get events end
+        # Draw a rolling dice for a few seconds
+
+    def start_turn(self):
+        # Here you should save some kind of timer value so that next states lasts for a few secons
+        self.current_state = PRESENTATION
+
+    def next_player(self):
+        self.turn += 1
+        if self.turn >= self.max_turns:
+            self.turn = 0
+            self.current_state = GAME_EVENT
+        else:
+            self.current_state = PRESENTATION
+
+    def game_event(self):
+        # Mini Game event, present the game and wait for results. Then pass the turn to next player
+        print("Play jenga")
+        TURN_FINISHED.happen()
+    
+    def item_event(self):
+        ITEM_NOT_CHOOSEN.happen()
 
     def attach_event(self, event):
         event.attach(self)

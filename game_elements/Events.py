@@ -1,8 +1,11 @@
 class Event:
     def __init__(self, **kwargs):
         self.sm_list = []
+        self.name = ""
         self.save_kwargs(self.name, 'name', kwargs)
+        self.verbose = ""
         self.save_kwargs(self.verbose, 'verbose', kwargs)
+        self.description = ""
         self.save_kwargs(self.description, 'description', kwargs)
     
     def save_kwargs(self, val, key, kwargs):

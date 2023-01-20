@@ -2,6 +2,9 @@ from common import *
 import pygame
 #from time import sleep
 
+# Constants
+MAX_ITEMS = 6
+
 class Position:
     def __init__(self):
         self.x = 0
@@ -31,6 +34,21 @@ class Player:
         self.speed = [0, 0]
         self.game_position = 0
         self.items = []
+        self.married = False
+        self.married_to = ""
+
+    def marry(player2):
+        accept = player2.accept()
+        if accept:
+            self.married = True
+            self.married_to = player2
+            print(f"Congratulations {self.name} and {player2.name}")
+        else:
+            print(f"{player2.name} you're mean person. Drink 3 shots!")
+
+    def accept():
+        # by default this is accepted, I can make the question later
+        return True
 
     def set_avatar(self, avatar):
         img_file = AVATARS[avatar]
@@ -140,6 +158,24 @@ class Player:
 
     def draw(self, screen):
         screen.blit(self.avatar, self.px.p())
+
+    def add_coins(self, coins):
+        self.coins += coins
+
+    def substract_coins(self, coins):
+        self.coins -= coins
+
+    def add_item(self, item):
+        if len(self.items) < MAX_ITEMS:
+            self.items.append[item]
+        else:
+            print(f"Max Items!")
+
+    def use_item(self, item):
+        if (item in self.items):
+            self.items.remove(item)
+        else:
+            raise Exception(f"You don't have {item.name}")
 
     def __str__(self):
         return F"{self.name} C={self.coins} p.{self.game_position}"
