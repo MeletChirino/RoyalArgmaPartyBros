@@ -21,7 +21,7 @@ class Position:
         return F"[x = {self.x}, y = {self.y}]"
 
 class Player:
-    def __init__(self, name_):
+    def __init__(self, name_, avatar):
         self.name = name_
         self.pos = Position()
         self.next_pos = Position()
@@ -36,8 +36,13 @@ class Player:
         self.items = []
         self.married = False
         self.married_to = ""
+        img_file = AVATARS[avatar]
+        self.av_name = avatar
+        self.avatar = pygame.image.load(img_file)
+        self.pic = pygame.transform.scale(self.avatar, PIC_SIZE)
+        self.avatar = pygame.transform.scale(self.avatar, CHARACTER_SIZE)
 
-    def marry(player2):
+    def marry(self, player2):
         accept = player2.accept()
         if accept:
             self.married = True
@@ -46,16 +51,12 @@ class Player:
         else:
             print(f"{player2.name} you're mean person. Drink 3 shots!")
 
-    def accept():
+    def accepts(self):
         # by default this is accepted, I can make the question later
         return True
 
-    def set_avatar(self, avatar):
-        img_file = AVATARS[avatar]
-        self.av_name = avatar
-        self.avatar = pygame.image.load(img_file)
-        self.pic = pygame.transform.scale(self.avatar, PIC_SIZE)
-        self.avatar = pygame.transform.scale(self.avatar, CHARACTER_SIZE)
+    def set_position(self, pos):
+        self.game_position = pos
 
     def set_offset(self, offset):
         self.offset = offset
@@ -178,4 +179,4 @@ class Player:
             raise Exception(f"You don't have {item.name}")
 
     def __str__(self):
-        return F"{self.name} C={self.coins} p.{self.game_position}"
+        return F"{self.name}"

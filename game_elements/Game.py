@@ -57,17 +57,15 @@ class Game:
     def run(self):
         print(f"GAME ST = {self.current_state}")
         if self.current_state == PREPARATION:
-            self.gameloop.init(
-                self.config_players(),
-                self.set_board(),
-            )
-            self.gameloop.start()
-            self.gameloop.show_avatars()
-            self.gameloop.set_avatars()
-            i = 1
-            for player in self.gameloop.players:
-                player.game_position = i
-                i += 1
+            self.gameloop.set_board("monopoly")
+            players = [
+                Player("melet", "vash"),
+                Player("Camila", "zelda"),
+                Player("Mariel", "kirby"),
+                Player("Thiz", "tingle")
+            ]
+            for player in players:
+                self.gameloop.add_player(player)
             GAME_CONFIG_DONE.happen()
 
         elif self.current_state == GAMELOOP:

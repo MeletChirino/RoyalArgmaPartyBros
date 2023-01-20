@@ -18,6 +18,10 @@ class GameLoop:
         self.description = ""
         self.save_kwargs(self.description, 'description', kwargs)
         self.init_time = 0
+        self.players = []
+        self.max_turns = 0
+        self.turn = 0
+        self.single_offset = [0, 0]
 
         self.trans_info = {
             # transitions info
@@ -68,32 +72,46 @@ class GameLoop:
             # Aqui pasan los minijuegos
         }
 
-    def init(self, players, board):
+    def set_board(self, board):
         # Setting up board
         self.board = Board(board)
         self.offset = self.board.properties["offset"]
+        print(f"self.offset = {self.offset}")
         self.win_size = [
             self.board.size[0] + self.offset[0] * 1.3, # x
             self.board.size[1] + self.offset[1] # y
             ]
-
-        # Setting up players
-        self.players = players
-        self.turn = 0
-        self.max_turns = len(players)
+        self.screen = pygame.display.set_mode(self.win_size)
         print(F"Max turns = {self.max_turns}")
-
         self.clock = pygame.time.Clock()
 
-    def start(self):
-        self.screen = pygame.display.set_mode(self.win_size)
+    def add_player(self, player):
+        self.max_turns += 1
+        player.set_position(self.max_turns)
+
+        global_offset = p_sum(self.offset, self.board.properties["start_pos"])
+        player.set_offset(self.single_offset)
+
+        if (self.max_turns % 3 == 0):
+            # this starts a new line
+            self.single_offset = p_sum(self.single_offset, [0, CHARACTER_OFFSET])
+            self.single_offset[0] = 0
+        else:
+            # draws a character next to each other
+            self.single_offset = p_sum(self.single_offset, [CHARACTER_OFFSET, 0])
+
+        global_offset = p_sum(self.single_offset, global_offset)
+
+        player.move(global_offset)
+        self.players.append(player)
+        print(f"{player} joined the game")
 
     def run(self):
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
                 self.continue_ = False
-        print(f"GAMELOOP ST = {self.current_state}")
+        #print(f"GAMELOOP ST = {self.current_state}")
 
         st_function = self.run_info[self.current_state]
         st_function()
@@ -138,12 +156,12 @@ class GameLoop:
         current_time = pygame.time.get_ticks() - self.init_time
         self.clock.tick(1) # Frames Per Second
         if (current_time >= 3000):
-            print("timeout")
+            #print("timeout")
             WAIT_5S.happen()
 
     # === State 2 ===
     def choose_item(self):
-        print("ITEM event happening")
+        #print("ITEM event happening")
         self.game_draw()
         ITEM_NOT_CHOOSEN.happen()
 
@@ -155,7 +173,7 @@ class GameLoop:
     def roll_dice(self):
         self.game_draw()
         self.dice_n = roll_dice()
-        print(F"DICE = {self.dice_n}")
+        #print(F"DICE = {self.dice_n}")
         DICE_ROLLED.happen()
 
     # === State 5 ===
@@ -181,7 +199,7 @@ class GameLoop:
         x = player.pos.x
         y = player.pos.y
         ev = self.board.properties["square_ev"][y][x]
-        print(f"{player} event {ev}")
+        #print(f"{player} event {ev}")
         ev(player)
         SQUARE_EVENT_FINISHED.happen()
 
