@@ -1,0 +1,22 @@
+<!--This file defines all card names and descriptions-->
+<card>
+    <id>1</id>
+    <name>Shot</name>
+    <description>You have found a shot, drink it!</description>
+    <img>shot.png</img>
+</card>
+
+<card>
+    <id>2</id>
+    <name>Oasis</name>
+    <description>You have found a shot, drink it!</description>
+    <img>oasis.png</img>
+</card>
+
+<!--Deck have probabilities to find a card, python will build the deck later-->
+<deck>
+    <cards>
+        <id>1</id>
+        <quantity>20</quantity>
+    </cards>
+</deck>
