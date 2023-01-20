@@ -55,8 +55,8 @@ MAIN_BOARD = {
 
 MONOPOLY_BOARD = {
     "background": os.path.join(BOARDS_FOLDER, "monopoly.png"),
-    "size": (930, 550),
-    "offset": [120, 90],
+    "size": (980, 750),
+    "offset": [200, 90],
     "start_pos": [70, 70], # you should add the offset and the initial position
     "dim": [1, 4],
     "square_dir": [

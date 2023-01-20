@@ -40,8 +40,8 @@ NEXT_PLAYER = 7
 GAME_EVENT = 8
 
 # --- GAMELOOP EVENTS ---
-WAIT_5S = Event()
-ITEM_CHOOSEN = Event()
+WAIT_5S = Event(name="WAIT", description="Wait for a few seconds")
+ITEM_CHOOSEN = Event(name="ITEM_CHOOSE", description="Choose an item")
 ITEM_EVENT_FINISHED = Event()
 ITEM_NOT_CHOOSEN = Event()
 DICE_ROLLED = Event()

@@ -17,5 +17,6 @@ class Event:
         self.sm_list.append(st_machine)
 
     def happen(self):
+        #print(f"{self.name} ev happening")
         for sm in self.sm_list:
             sm.transition(self)
