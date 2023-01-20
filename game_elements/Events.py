@@ -1,7 +1,15 @@
 class Event:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.sm_list = []
+        self.save_kwargs(self.name, 'name', kwargs)
+        self.save_kwargs(self.verbose, 'verbose', kwargs)
+        self.save_kwargs(self.description, 'description', kwargs)
     
+    def save_kwargs(self, val, key, kwargs):
+        if key in kwargs.keys():
+            val = kwargs[key]
+            print(f"{key}: {val} saved.")
+
     def attach(self, st_machine):
         self.sm_list.append(st_machine)
 

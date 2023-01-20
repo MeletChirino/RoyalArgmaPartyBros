@@ -24,6 +24,14 @@ class GameLoop:
         print(F"Max turns = {self.max_turns}")
 
         self.clock = pygame.time.Clock()
+        self.save_kwargs(self.name, 'name', kwargs)
+        self.save_kwargs(self.verbose, 'verbose', kwargs)
+        self.save_kwargs(self.description, 'description', kwargs)
+    
+    def save_kwargs(self, val, key, kwargs):
+        if key in kwargs.keys():
+            val = kwargs[key]
+            print(f"{key}: {val} saved.")
 
     def start(self):
         self.screen = pygame.display.set_mode(self.win_size)

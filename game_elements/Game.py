@@ -24,7 +24,15 @@ class Game:
         ]
         for event in gameloop_events:
             self.gameloop.attach_event(event)
-        self.continue_ = True        
+        self.continue_ = True
+        self.save_kwargs(self.name, 'name', kwargs)
+        self.save_kwargs(self.verbose, 'verbose', kwargs)
+        self.save_kwargs(self.description, 'description', kwargs)
+    
+    def save_kwargs(self, val, key, kwargs):
+        if key in kwargs.keys():
+            val = kwargs[key]
+            print(f"{key}: {val} saved.")
 
     def run(self):
         #print(f"GAME ST = {self.current_state}")
