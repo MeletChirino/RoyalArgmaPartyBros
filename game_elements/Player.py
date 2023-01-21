@@ -36,8 +36,8 @@ class Player:
         self.items = []
         self.married = False
         self.married_to = ""
-        img_file = AVATARS[avatar]
         self.av_name = avatar
+        img_file = os.path.join(CHARACTERS_FOLDER, AVATARS[avatar])
         self.avatar = pygame.image.load(img_file)
         self.pic = pygame.transform.scale(self.avatar, PIC_SIZE)
         self.avatar = pygame.transform.scale(self.avatar, CHARACTER_SIZE)

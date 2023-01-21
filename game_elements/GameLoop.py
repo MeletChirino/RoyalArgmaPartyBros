@@ -250,6 +250,18 @@ class GameLoop:
         if self.max_turns == 9:
             GAME_BEGINS.happen()
 
+    # === State 10 === 
+    def board_select(self):
+        self.meryl.wait_for_conn()
+        action = self.meryl.wait_for_act()
+        # here you're giving general info for local players and show new players
+        if action['action'] == 1:
+            self.set_board(
+                action['board'],
+                )
+        elif action['action'] == 0:
+            BOARD_SELECTED.happen()
+
     # === Not relevant methods ===
     def attach_event(self, event):
         event.attach(self)
@@ -296,7 +308,8 @@ class GameLoop:
         self.screen.blit(label, [200, 0])
         pos = [CHARACTER_SPACE, CHARACTER_SPACE]
         for character in AVATARS:
-            img = pygame.image.load(AVATARS[character])
+            img_file = os.path.join(CHARACTERS_FOLDER, AVATARS[character])
+            img = pygame.image.load(img_file)
             img = pygame.transform.scale(img, CHARACTER_SIZE)
             self.screen.blit(img, pos)
             myfont = pygame.font.SysFont("monospace", 20)
