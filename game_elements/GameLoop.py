@@ -242,12 +242,13 @@ class GameLoop:
         action = self.meryl.wait_for_act()
         # here you're giving general info for local players and show new players
         if action['action'] == 1:
+            # TODO : Check there are no repeated avatars
             self.add_player(
                 Player(action['name'], action['avatar'])
                 )
         elif action['action'] == 0:
             GAME_BEGINS.happen()
-        if self.max_turns == 9:
+        if self.max_turns == 8:
             GAME_BEGINS.happen()
 
     # === State 10 === 
@@ -306,6 +307,8 @@ class GameLoop:
         label = title_font.render("Choose your character", 1, BLACK)
         self.screen.blit(label, [200, 0])
         pos = [CHARACTER_SPACE, CHARACTER_SPACE]
+        # TODO : Write instruictions to log a player in
+        # TODO : Place a QR code to connect easily
         for character in AVATARS:
             img_file = os.path.join(CHARACTERS_FOLDER, AVATARS[character])
             img = pygame.image.load(img_file)

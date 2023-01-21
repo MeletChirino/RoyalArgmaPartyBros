@@ -9,7 +9,7 @@ from game_elements.Transition import Tr
 
 class Game:
     def __init__(self, **kwargs):
-        self.current_state = 0
+        self.current_state = GAMELOOP
         self.gameloop = GameLoop()
         self.players = []
         self.trans_info = {
@@ -28,6 +28,7 @@ class Game:
         }
         gameloop_events = [
             # --- GAMELOOP EVENTS ---
+            BOARD_SELECTED,
             PLAYER_REG,
             GAME_BEGINS,
             WAIT_5S,
@@ -58,13 +59,7 @@ class Game:
 
     def run(self):
         #print(f"GAME ST = {self.current_state}")
-        if self.current_state == PREPARATION:
-            self.gameloop.set_board(self.board)
-            for player in self.players:
-                self.gameloop.add_player(player)
-            GAME_CONFIG_DONE.happen()
-
-        elif self.current_state == GAMELOOP:
+        if self.current_state == GAMELOOP:
             self.gameloop.run()
         elif self.current_state == GAME_EVENT:
             # here you have to place a game event
