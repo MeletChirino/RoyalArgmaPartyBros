@@ -4,6 +4,7 @@ from random import randint
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FILE = os.path.join(BASE_DIR, 'config.json')
+ELEMENTS_FOLDER = os.path.join(BASE_DIR, 'game_elements', 'img', 'elements')
 
 with open(FILE) as config_file:
     config = json.load(config_file)
@@ -29,6 +30,7 @@ GAME_EVENT_FINISHED = Event()
 GAME_FINISHED = Event()
 
 # --- GAMELOOP STATES ---
+CHARACTER_SELECT = 9
 START_TURN = 0
 PRESENTATION = 1
 CHOOSE_ITEM = 2
@@ -40,6 +42,8 @@ NEXT_PLAYER = 7
 GAME_EVENT = 8
 
 # --- GAMELOOP EVENTS ---
+GAME_BEGINS = Event()
+PLAYER_REG = Event(name='PlayerReg', verbose='Player sign up')
 WAIT_5S = Event(name="WAIT", description="Wait for a few seconds")
 ITEM_CHOOSEN = Event(name="ITEM_CHOOSE", description="Choose an item")
 ITEM_EVENT_FINISHED = Event()
@@ -79,6 +83,11 @@ AVATARS = {
     "vash": os.path.join(CHARACTERS_FOLDER, "vash.gif"),
     "zelda": os.path.join(CHARACTERS_FOLDER, "zelda.png"),
     "spider": os.path.join(CHARACTERS_FOLDER, "spider_man.gif"),
+}
+
+# --- MISCELANOUS ELEMENTS ---
+ELEMENTS = {
+    "prohibited": os.path.join(ELEMENTS_FOLDER, "prohibited.png"),
 }
 
 # --- BOARDS LIST ----
@@ -131,3 +140,6 @@ def p_sum(pos1, pos2):
 
 def roll_dice():
     return randint(1,6)
+
+# --- CONNECTION CONSTANTS ---
+PORT = 6589

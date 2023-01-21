@@ -1,15 +1,18 @@
 import pygame
+import socket
 from time import sleep, time
 
 # game components
 from common import *
 from game_elements.Board import Board
 from game_elements.Transition import Tr
+from game_elements.meryl import Meryl
+from game_elements.Player import Player
 
 
 class GameLoop:
     def __init__(self, **kwargs):
-        self.current_state = 0
+        self.current_state = CHARACTER_SELECT # Starting stage
         pygame.init()
         self.name = ""
         self.save_kwargs(self.name, 'name', kwargs)
@@ -23,8 +26,14 @@ class GameLoop:
         self.turn = 0
         self.single_offset = [0, 0]
 
+        self.meryl = Meryl(Meryl.SERVER)
+
         self.trans_info = {
             # transitions info
+            CHARACTER_SELECT: [
+                Tr(GAME_BEGINS, START_TURN),
+                Tr(PLAYER_REG, CHARACTER_SELECT),
+                ],
             PRESENTATION: [
                 Tr(WAIT_5S, CHOOSE_ITEM),
                 ],
@@ -52,6 +61,9 @@ class GameLoop:
         }
 
         self.run_info = {
+            # Characters select stage before starting the game
+            CHARACTER_SELECT: self.character_select,
+            # transitory state
             START_TURN: self.start_turn, # 0
             # Presentacion muestra el nombre del jugador (notifica al server)
             PRESENTATION: self.presentation,# 1
@@ -108,10 +120,9 @@ class GameLoop:
 
     def run(self):
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 self.continue_ = False
-        #print(f"GAMELOOP ST = {self.current_state}")
+        print(f"GAMELOOP ST = {self.current_state}")
 
         st_function = self.run_info[self.current_state]
         st_function()
@@ -220,6 +231,21 @@ class GameLoop:
         # You should draw something different, depending on the event
         TURN_FINISHED.happen()
 
+    # === State 9 === 
+    def character_select(self):
+        self.show_avatars()
+        self.meryl.wait_for_conn()
+        action = self.meryl.wait_for_act()
+        # here you're giving general info for local players and show new players
+        if action['action'] == 1:
+            self.add_player(
+                Player(action['name'], action['avatar'])
+                )
+        elif action['action'] == 0:
+            GAME_BEGINS.happen()
+        if self.max_turns == 9:
+            GAME_BEGINS.happen()
+
     # === Not relevant methods ===
     def attach_event(self, event):
         event.attach(self)
@@ -273,48 +299,24 @@ class GameLoop:
             label = myfont.render(character, 1, BLACK)
             self.screen.blit(label, p_sum(pos, [0, 60]))
 
+            for player in self.players:
+                if player.av_name == character:
+                    img = pygame.image.load(ELEMENTS['prohibited'])
+                    img = pygame.transform.scale(img, CHARACTER_SIZE)
+                    self.screen.blit(img, pos)
+
+                    myfont = pygame.font.SysFont("monospace", 20)
+                    label = myfont.render(player.name, 1, BLACK)
+                    self.screen.blit(label, p_sum(pos, [0, -30]))
+
             # Set cursor for next Character
             if pos[0] >= (self.win_size[0] - CHARACTER_SPACE - 70):
                 pos[0] = CHARACTER_SPACE
                 pos[1] += CHARACTER_SPACE
             else:
                 pos = p_sum(pos, [CHARACTER_SPACE, 0])
-            pygame.display.flip()
 
-    def set_avatars(self):
-        single_offset = [0, 0]
-        n = 1
-        for player in self.players:
-            global_offset = p_sum(self.offset, self.board.properties["start_pos"])
-            print(F"{player}")
-            choosen = False
-            while not choosen:
-                choosen = True
-                avatar = input(F"{player} please choose a character\n >>> ")
-                # verify if charater is already choosen
-                for player_ in self.players:
-                    if avatar == player_.av_name:
-                        print(F"{avatar} is already choosen by {player_}")
-                        choosen = False
-                        break # break for loop
-            
-                if avatar in AVATARS and choosen:
-                    player.set_offset(single_offset)
-                    if (n % 3 == 0):
-                        # this starts a new line
-                        single_offset = p_sum(single_offset, [0, CHARACTER_OFFSET])
-                        single_offset[0] = 0
-                    else:
-                        # draws a character next to each other
-                        single_offset = p_sum(single_offset, [CHARACTER_OFFSET, 0])
-                    player.set_avatar(avatar)
-                    global_offset = p_sum(single_offset, global_offset)
-                    player.move(global_offset)
-                    choosen = True
-                    n += 1
-                else:
-                    print("Character not eligible")
-                    choosen = False
+            pygame.display.update()
 
     def save_kwargs(self, val, key, kwargs):
         if key in kwargs.keys():
@@ -325,3 +327,9 @@ class GameLoop:
         self.board.draw(self.screen, self.offset)
         self.draw_stats()
         self.draw_players()
+
+    def send_options(self):
+        opt = self.trans_info[self.current_state]
+        resp = {'resp': opt}
+        print(resp)
+        self.meryl.send(resp)

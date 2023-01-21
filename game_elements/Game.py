@@ -28,6 +28,8 @@ class Game:
         }
         gameloop_events = [
             # --- GAMELOOP EVENTS ---
+            PLAYER_REG,
+            GAME_BEGINS,
             WAIT_5S,
             ITEM_CHOOSEN,
             ITEM_EVENT_FINISHED,
@@ -55,7 +57,7 @@ class Game:
             print(f"{key}: {val} saved.")
 
     def run(self):
-        print(f"GAME ST = {self.current_state}")
+        #print(f"GAME ST = {self.current_state}")
         if self.current_state == PREPARATION:
             self.gameloop.set_board(self.board)
             for player in self.players:
@@ -96,3 +98,6 @@ class Game:
 
     def attach_event(self, event):
         event.attach(self)
+
+    def game_finished(self):
+        pass
