@@ -17,17 +17,7 @@ if __name__=="__main__":
     ]
     for event in gameplay_events:
         gameplay.attach_event(event)
-    players = [
-        Player("melet", "banjo"),
-        Player("Camila", "zelda"),
-        Player("Mariel", "kirby"),
-        Player("Thiz", "tingle")
-        ]
-    gameplay.set_board("monopoly")
-
-    for player in players:
-        gameplay.add_player(player)
-
+        
     # giant loop
     continue_ = True
     while continue_:

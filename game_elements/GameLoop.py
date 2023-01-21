@@ -12,7 +12,7 @@ from game_elements.Player import Player
 
 class GameLoop:
     def __init__(self, **kwargs):
-        self.current_state = CHARACTER_SELECT # Starting stage
+        self.current_state = BOARD_SELECT # Starting stage
         pygame.init()
         self.name = ""
         self.save_kwargs(self.name, 'name', kwargs)
@@ -255,11 +255,10 @@ class GameLoop:
         self.meryl.wait_for_conn()
         action = self.meryl.wait_for_act()
         # here you're giving general info for local players and show new players
-        if action['action'] == 1:
+        if action['action'] == 0:
             self.set_board(
                 action['board'],
                 )
-        elif action['action'] == 0:
             BOARD_SELECTED.happen()
 
     # === Not relevant methods ===
