@@ -30,6 +30,7 @@ GAME_EVENT_FINISHED = Event()
 GAME_FINISHED = Event()
 
 # --- GAMELOOP STATES ---
+BOARD_SELECT = 10
 CHARACTER_SELECT = 9
 START_TURN = 0
 PRESENTATION = 1
@@ -42,6 +43,7 @@ NEXT_PLAYER = 7
 GAME_EVENT = 8
 
 # --- GAMELOOP EVENTS ---
+BOARD_SELECTED = Event()
 GAME_BEGINS = Event()
 PLAYER_REG = Event(name='PlayerReg', verbose='Player sign up')
 WAIT_5S = Event(name="WAIT", description="Wait for a few seconds")

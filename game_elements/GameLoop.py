@@ -30,6 +30,9 @@ class GameLoop:
 
         self.trans_info = {
             # transitions info
+            BOARD_SELECT: [
+                Tr(BOARD_SELECTED, CHARACTER_SELECT),
+                ],
             CHARACTER_SELECT: [
                 Tr(GAME_BEGINS, START_TURN),
                 Tr(PLAYER_REG, CHARACTER_SELECT),
@@ -61,6 +64,7 @@ class GameLoop:
         }
 
         self.run_info = {
+            BOARD_SELECT: self.board_select,
             # Characters select stage before starting the game
             CHARACTER_SELECT: self.character_select,
             # transitory state
